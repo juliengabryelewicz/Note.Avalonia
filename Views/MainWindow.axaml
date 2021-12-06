@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Note.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Note.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Note">
+    <Grid Grid.Row="1" Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Width="300" IsVisible="{Binding HasNotes}" Grid.Column="0">
+            <ItemsRepeater Items="{Binding Notes}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <ListBoxItem Name="NoteEntry">
+                            <StackPanel>
+                                <i:Interaction.Behaviors>
+                                    <ia:EventTriggerBehavior EventName="Tapped" SourceObject="{Binding #NoteEntry}">
+                                        <ia:InvokeCommandAction Command="{Binding $parent[ItemsRepeater].DataContext.OnReadButtonClicked}" CommandParameter="{Binding NoteEntityId}" />
+                                    </ia:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                                <TextBlock Classes="Heading" TextWrapping="Wrap" Text="{Binding Title}"  />
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Content}" MaxLines="1"  />
+                            </StackPanel>
+                        </ListBoxItem>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>    
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0 0 15 0" Command="{Binding OnCreateButtonClicked}">Create note</Button>
+                    <Button Margin="0 0 15 0" Command="{Binding OnDeleteButtonClicked}" IsVisible="{Binding NoteId}">Delete</Button>
+                    <Button Margin="0 0 15 0" Command="{Binding OnUpdateButtonClicked}">Save</Button>
+                </StackPanel>
+                <TextBox Text="{Binding NoteTitle}" FontWeight="700" Watermark="Note Title (Required)" />
+                <TextBox Text="{Binding NoteContent}" Watermark="Note Content" AcceptsReturn="True" TextWrapping="Wrap" />
+                <TextBox Text="{Binding NoteId}" Watermark="Note Id" IsVisible="false" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
